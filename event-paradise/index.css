@@ -1,0 +1,11 @@
+.tooltip-inner {
+  color: #fff;
+  background: #ff0000;
+}
+
+.tooltip-visible {
+    visibility: visible;
+    
+  }
+
+
