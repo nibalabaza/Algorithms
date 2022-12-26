@@ -6,19 +6,19 @@ const options = {
     placement: "bottom"
 };
 
-let firstInvalidEl = null;
-
 for (const element of elements) {
     if (element.type !== "submit") {
         element.addEventListener("invalid", (event) => {
             event.preventDefault();
-            if (firstInvalidEl == null) {
-                firstInvalidEl = element;
-                element.classList.add("is-invalid");
-                helpText(element);
-                setTooltipMessages(element);
-                element.focus();
+            element.classList.add("is-invalid");
+            helpText(element);
+            setTooltipMessages(element);
+            let firstInvalidEl = document.querySelector(".is-invalid");
+            if (firstInvalidEl != null) {
+                firstInvalidEl.focus();
             }
+
+            // }
         });
         element.addEventListener("change", (event) => {
             event.preventDefault();
@@ -87,7 +87,6 @@ function setValidEl(element) {
     if (tooltip)
         tooltip.dispose();
 
-    if (firstInvalidEl == element) firstInvalidEl = null;
 }
 
 function setInvalidEl(element) {
