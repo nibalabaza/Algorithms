@@ -10,7 +10,7 @@ for (const element of elements) {
     if (element.type !== "submit") {
         element.addEventListener("invalid", (event) => {
             event.preventDefault();
-            element.classList.add("is-invalid");
+            element.classList.add("is-invalid");//repetation
             helpText(element);
             setTooltipMessages(element);
             let firstInvalidEl = document.querySelector(".is-invalid");
@@ -28,10 +28,11 @@ for (const element of elements) {
                 setValidEl(element);
 
             } else {
-                setInvalidEl(element);
+                setInvalidEl(element);//repetation
             }
         });
 
+        //to delete
         element.addEventListener("reset", (event) => {
             console.log(form.checkValidity());
         });
@@ -45,15 +46,29 @@ function toast() {
     toast.show()
 }
 
-form.addEventListener("submit", (event) => {
+form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    toast();
-    console.log("implement toaster");
-    form.reset();
-    Array.from(form.elements).forEach((ele) => {
-        if (ele.type !== 'button' && ele.type !== 'submit')
-            resetInput(ele);
-    });
+    let formDate = new FormData(form);
+    let eventCreated = {
+        name: formDate.get('name'),
+        date: formDate.get('date'),
+        locationId: formDate.get('location'),
+        themeId: formDate.get('theme'),
+        rate: formDate.get('rate'),
+        description: formDate.get('description')
+    };
+    let res = await createEvent(eventCreated);
+    if (res.status == 204) {
+        toast();
+        console.log("implement toaster");
+        form.reset();
+        Array.from(form.elements).forEach((ele) => {
+            if (ele.type !== 'button' && ele.type !== 'submit')
+                resetInput(ele);
+        });
+    }
+
+
 });
 
 
@@ -95,6 +110,7 @@ function setInvalidEl(element) {
     bootstrap.Tooltip.getOrCreateInstance(element).enable();
 }
 
+// to change
 function helpText(element, reset = false) {
     let helpText;
     if (element.parentElement.classList.contains('input-group')) {
@@ -114,7 +130,28 @@ function helpText(element, reset = false) {
 
 }
 
-const newDate = new Date();
-let today = newDate.toISOString().substring(0, 10);
-const date = document.getElementById("dateValidation");
-date.setAttribute("min", today);
+
+window.onload = async function () {
+    const newDate = new Date();
+    let today = newDate.toISOString().substring(0, 10);
+    const date = document.getElementById("date");
+    date.setAttribute("min", today);
+
+    // set themes
+    let themes = await getThemes();
+    document.getElementById('theme').innerHTML += themes.map((theme) => {
+        return `<option value="${theme.id}">${theme.name}</option>`
+    });
+
+    // set locations
+    let locations = await getLocations();
+    document.getElementById('location').innerHTML += locations.map((location) => {
+        return `<option value="${location.id}">${location.name}</option>`
+    });
+
+}
+
+
+
+
+
